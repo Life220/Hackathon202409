@@ -417,6 +417,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     </svg>
                   </a>
                 </p>
+                <p class="font-normal text-lg text-gray-700">
+                  Please take a look at this sample PR to understand how your PR should look like:
+                  <a href="https://github.com/Knowledge-Foundation/Hackathon202409/pull/3/files" target="_blank" class="inline-flex items-center font-medium text-blue-600 hover:underline">
+                    PR with example entry 
+                    <svg class="w-4 h-4 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                    </svg>
+                  </a>
+                </p>
               </div>
 
               <div class="block p-6 bg-white border border-gray-200 rounded-lg shadow my-4">
