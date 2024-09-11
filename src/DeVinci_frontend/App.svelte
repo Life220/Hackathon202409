@@ -9,6 +9,8 @@
   import Brand from "./pages/Brand.svelte";
   import NotFound from "./pages/NotFound.svelte";
   import deVinci from "./pages/deVinci.svelte";
+  import ExperiencesSelection from "./pages/ExperiencesSelection.svelte";
+  import ExperiencesCreation from "./pages/ExperiencesCreation.svelte";
 
   import { syncLocalChanges } from "./helpers/localStorage";
 
@@ -19,6 +21,8 @@
     "/settings": UserSettings,
     "/about": About,
     "/brand": Brand,
+    "/experiences": ExperiencesSelection, 
+    "/experiences/create": ExperiencesCreation,
     // Catch-all (this is optional, but if present it must be the last)
     "*": NotFound,
   };
