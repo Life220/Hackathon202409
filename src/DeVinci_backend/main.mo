@@ -484,21 +484,6 @@ shared actor class DeVinciBackend(custodian: Principal) = Self {
       aiModelIdentifier = null;
       databaseToInclude = #None;
       databaseIdentifier = null;
-    },
-    // DeVinci
-    {
-      id = "devinci";
-      title = "DeVinci AI Chat App";
-      creator = "Nuno & Patrick";
-      shortDescription = "This is the first end-to-end-decentralized AI chat app and the core of the codebase for this hackathon";
-      longDescription = "DeVinci is the fully private, end-to-end-decentralized AI chat app served from the Internet Computer. AI models run directly on the user's device so no data needs to leave the device and you can even use it offline.";
-      note = "Choose your favorite open-source Large Language Model and chat with it.";
-      isStandaloneApp = true;
-      standaloneAppUrl = ?"https://x6occ-biaaa-aaaai-acqzq-cai.icp0.io/";
-      experienceType = null;
-      aiModelIdentifier = null;
-      databaseToInclude = #None;
-      databaseIdentifier = null;
     }
   ];
 
