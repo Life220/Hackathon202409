@@ -11,6 +11,7 @@
   import deVinci from "./pages/deVinci.svelte";
   import ExperiencesSelection from "./pages/ExperiencesSelection.svelte";
   import ExperiencesCreation from "./pages/ExperiencesCreation.svelte";
+  import QuizCreator from "./pages/QuizCreator.svelte";
 
   import { syncLocalChanges } from "./helpers/localStorage";
 
@@ -23,6 +24,7 @@
     "/brand": Brand,
     "/experiences": ExperiencesSelection, 
     "/experiences/create": ExperiencesCreation,
+    "/quizCreator": QuizCreator,
     // Catch-all (this is optional, but if present it must be the last)
     "*": NotFound,
   };

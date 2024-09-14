@@ -27,6 +27,11 @@
     return;
   };
 
+  async function showNewQuiz() {
+    push('/quizCreator');
+    return;
+  }
+
 </script>
 
 <div class="flex flex-col justify-center w-full items-center">
@@ -36,6 +41,9 @@
   {#if userHasDownloadedAtLeastOneModel}
     <button type="button" on:click={showNewChat} class="disabled:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-800 mr-auto w-full my-5 flex justify-center text-gray-800 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-400 font-medium rounded-full text-xs px-3 py-1.5 text-center">
       New chat
+    </button>
+    <button type="button" on:click={showNewQuiz} class="disabled:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-800 mr-auto w-full my-5 flex justify-center text-gray-800 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-400 font-medium rounded-full text-xs px-3 py-1.5 text-center">
+      New Quiz
     </button>
   {:else}
     <button disabled aria-label="Choose a model first." type="button" class="tooltip-toggle disabled:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-800 mr-auto w-full my-5 flex justify-center text-gray-800 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-400 font-medium rounded-full text-xs px-3 py-1.5 text-center">

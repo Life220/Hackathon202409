@@ -25,7 +25,8 @@
   let showToast = false;
 
   function isPWAInstalled() {
-    return (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone);
+    return (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone);
+    // return (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone);
   };
 
   let isChatBoxReady = false;

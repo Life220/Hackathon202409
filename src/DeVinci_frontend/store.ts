@@ -37,7 +37,7 @@ if (!deviceType) {
     //deviceType = 'Android ' + deviceType; // e.g., 'Android mobile'
     deviceType = 'Android';
   } else if (osName === 'iOS') {
-    //deviceType = 'iOS ' + deviceType; // e.g., 'iOS mobile'
+    //deviceType = 'iOS ' + deviceType; // e.g., 'iOS mobile'Can you teach me long division {primary school level, simplified, dumb down}
     deviceType = 'iOS';
   };
 };
