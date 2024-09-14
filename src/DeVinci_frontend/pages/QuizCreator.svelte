@@ -8,10 +8,22 @@
     import { onMount } from 'svelte';
     import DeVinci from "./deVinci.svelte";
     import StartUpQuizPanel from "../components/StartUpQuizPanel.svelte";
-
+    import Math from "../components/Math.svelte";
+    import Quiz from "../components/Quiz.svelte";
   
-    let showToast = true;
-    let subject;
+    let subject: string | null = null;
+    let topic: string | null = null;
+
+    function handleSubject(message: string)
+    {
+      subject = message;
+    }
+
+    function handleTopic(message: string)
+    {
+      topic = message;
+    }
+
     onMount(() => {
       const sidebarToggle = document.getElementById('sidebarToggle');
       const chat = document.getElementById('chat');
@@ -41,8 +53,7 @@
         chat.removeEventListener('click', stopPropagation);
       };
     });
-  
-  </script>
+</script>
   
   <div class="flex flex-row h-screen">
     <aside id="chat" class="fixed z-50 bg-gray-200 w-72 min-w-72 h-full md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in">
@@ -70,8 +81,19 @@
         </div>
       </header>
   
-      <main class="pt-8 pb-16 lg:pt-8 lg:pb-24 bg-slate-100 dark:bg-gray-900 antialiased">
-        <StartUpQuizPanel sendMessageCallbackFunction={subject}/>
+      <main id="QuizMain" class="pt-8 pb-16 lg:pt-8 lg:pb-24 bg-slate-100 dark:bg-gray-900 antialiased">
+        <img src={devincilogo} class="rotating-image w-16 h-16 p-0 m-8 rounded-full" alt="devinci logo" />
+        <div id="Quiz">
+          {#if topic === 'Addition'}
+            <Quiz />
+          {:else}
+            {#if subject === 'Math'}
+              <Math sendMessageCallbackFunction={handleTopic} />
+            {:else}
+              <StartUpQuizPanel sendMessageCallbackFunction={handleSubject} />
+            {/if}
+          {/if}
+        </div>
       </main>
   
       <Footer />
@@ -82,5 +104,20 @@
       .footer {
           background: rgba(255,255,255,1);
           padding-top: 10px;
+      }
+
+      #QuizMain
+      {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+        overflow: auto;
+      }
+
+      #Quiz
+      {
+        width: 90%;
+        max-width: 50rem;
       }
   </style>  
