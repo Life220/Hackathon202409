@@ -6,6 +6,7 @@
     };
   
     // Sample prompts
+    const Corruption = 'Corruption';
     const Math = 'Math';
     const English = 'English';
     const Physics = 'Physics';
@@ -18,6 +19,13 @@
       <h1 class="text-white mb-3 border-b-2 border-dotted border-white w-full text-center text-3xl">Select a Subject</h1>
 
       <div class="flex flex-col gap-4 w-full">
+        <div class="text-[#151b1e] bg-gray-100 border-2 border-dotted border-[#f9c490] rounded-lg cursor-pointer"
+             on:click={() => sendMessage(Corruption)}>
+          <div class="inline-flex items-center justify-between w-full p-3">
+            <p class="w-full text-[#151b1e] text-sm font-normal">{Corruption}</p>
+          </div>
+        </div>
+
         <div class="text-[#151b1e] bg-gray-100 border-2 border-dotted border-[#f9c490] rounded-lg cursor-pointer"
              on:click={() => sendMessage(Math)}>
           <div class="inline-flex items-center justify-between w-full p-3">

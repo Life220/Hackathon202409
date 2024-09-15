@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount, afterUpdate } from "svelte";
-    import { writable } from "svelte/store";
+    import { writable, get as getStoreValue } from "svelte/store";
     import Message from "./Message.svelte";
     import {
     chatModelGlobal,
@@ -15,28 +15,118 @@
         //checkUserHasKnowledgeBase
     } from "../helpers/vector_database";
     import SelectModel from "./SelectModel.svelte";
-    import ChatBox from "./ChatBox.svelte";
+    import MakeQuiz from "./MakeQuiz.svelte";
     import { userHasDownloadedModel } from "../helpers/localStorage";
+    import { get } from "http";
+    import { slice } from "@tensorflow/tfjs-core";
 
     // Reactive statement to check if the user has already downloaded at least one AI model
     $: userHasDownloadedAtLeastOneModel = userHasDownloadedModel();
 
+    export let subject: string;
     let worker: Worker;
     let prompt = '';
-    let results = writable([]);
+    let results = writable<any[]>([]);
+    let userAnswers = writable<string[]>([]);
+    let marks = writable<boolean[]>([]);
 
-    onMount(() => {
-        worker = new Worker('/src/DeVinci_frontend/assets/worker.ts');
-        worker.onmessage = (event) => {
-            results.update(msgs => [...msgs, { name: 'DeVinci', content: event.data }]);
-        }
-    });
+    // onMount(() => {
+    //     worker = new Worker('/src/DeVinci_frontend/assets/worker.ts');
+    //     worker.onmessage = (event) => {
+    //         results.update(msgs => [...msgs, { name: 'DeVinci', content: event.data }]);
+    //     }
+    //     console.log("Test");
+    // });
 
-    function sendPrompt()
+
+    function sendUserAnswers()
     {
-        results.update(msgs => [...msgs, { name: 'You', content: prompt }])
-        worker.postMessage({ type: 'prompt', data: prompt });
-        prompt = '';
+        const givenAnswers = getStoreValue(userAnswers);
+        // console.log("Submitted answers: ", givenAnswers);
+
+        if (subject === 'Math')
+        {
+            const calculatedAnswers = calculateAnswers();
+            const doubleUserAnswers = givenAnswers.map(answer => parseFloat(answer));
+            // console.log("After calculation: " + calculatedAnswers);
+            checkAnswers(calculatedAnswers, doubleUserAnswers);
+        }
+        else if (subject == 'Corruption')
+        {
+
+        }
+    }
+
+    function checkAnswers(calculatedAnswers: number[], doubledUserAnswers: number[])
+    {
+      let marksArr = [];
+
+      calculatedAnswers.forEach((answer, index) => {
+        if (index < doubledUserAnswers.length)
+        {
+          if (answer == doubledUserAnswers[index])
+            marksArr.push(true);
+          else
+            marksArr.push(false);
+        }
+        else
+          marksArr.push(false);
+      });
+      marks.set(marksArr);
+    }
+
+    function calculateAnswers()
+    {
+        const currentQuestions = getStoreValue(questions);
+        let calculatedAnswers = [];
+
+        currentQuestions.forEach(question => {
+            let variables = [];
+            let signs = [];
+            let currentVariable = '';
+            let finalResult;
+
+            for (let k = 0; k < question.length; k++)
+            {
+                const char = question[k];
+                if (!isNaN(parseFloat(char)))
+                {
+                    currentVariable += char;
+                }
+                else if (char != ' ')
+                {
+                    if (currentVariable)
+                    {
+                        variables.push(parseFloat(currentVariable));
+                        currentVariable = '';
+                    }
+                    signs.push(char);
+                }
+            }
+            if (currentVariable)
+                variables.push(parseFloat(currentVariable));
+
+            // Create expression
+            let expression = variables[0].toString();
+            for (let k = 0; k < signs.length; k++)
+            {
+                expression += `${signs[k]} ${variables[k+1]}`;
+            }
+
+            // Evaluate the expression
+            try
+            {
+                finalResult = new Function(`return ${expression}`)();
+                calculatedAnswers.push(finalResult);
+            }
+            catch (error)
+            {
+                console.error(`Error evaluating expression: ${expression}`);
+                console.error(error);
+            }
+        });
+
+        return calculatedAnswers;
     }
 
     let vectorDbSearchTool;
@@ -59,7 +149,7 @@
     setLabel("generate-label", message);
   };
 
-    async function getChatModelResponse(prompt, progressCallback = generateProgressCallback) {
+    async function getResponse(prompt, progressCallback = generateProgressCallback) {
     try {
       /* debugOutput = "###in getChatModelResponse###";
       debugOutput += JSON.stringify(prompt);
@@ -84,7 +174,7 @@
             const additionalContentEntry = { role: 'user', content: additionalContentToProvide, name: 'UserKnowledgeBase' };
             prompt = [...prompt, additionalContentEntry];
           } catch (error) {
-            console.error("Error in getChatModelResponse final prompt and additionalContentEntry");
+            console.error("Error in getQuizModelResponse final prompt and additionalContentEntry");
             console.error(error.toString());
             /* debugOutput += " final prompt and additionalContentEntry error ";
             debugOutput += error.toString();
@@ -93,7 +183,7 @@
             setLabel("debug-label", debugOutput);  */
           };
         } catch (error) {
-          console.error("Error in getChatModelResponse getting vectorDbSearchToolResponse");
+          console.error("Error in getQuizModelResponse getting vectorDbSearchToolResponse");
           console.error(error.toString());
           /* debugOutput += " vectorDbSearchToolResponse error ";
           debugOutput += error.toString();
@@ -126,7 +216,7 @@
               progressCallback(stepCount, curMessage);
               stepCount ++;
             } catch (error) {
-              console.error("Error in getChatModelResponse progressCallback");
+              console.error("Error in getQuizModelResponse progressCallback");
               console.error(error.toString());
               /* debugOutput += " progressCallback error ";
               debugOutput += error.toString();
@@ -136,7 +226,7 @@
             };
           };
         } catch (error) {
-          console.error("Error in getChatModelResponse completion loop");
+          console.error("Error in getQuizModelResponse completion loop");
           console.error(error.toString());
           /* debugOutput += " completion loop error ";
           debugOutput += error.toString();
@@ -145,7 +235,7 @@
           setLabel("debug-label", debugOutput);  */
         };
       } catch (error) {
-        console.error("Error in getChatModelResponse completion");
+        console.error("Error in getResponse completion (Quiz)");
         console.error(error.toString());
         /* debugOutput += " completion error ";
         debugOutput += error.toString();
@@ -161,9 +251,10 @@
         /* debugOutput += " reply ";
         debugOutput += reply;
         setLabel("debug-label", debugOutput); */
+        quizFormatter(reply);
         return reply;
       } catch (error) {
-        console.error("Error in getChatModelResponse reply");
+        console.error("Error in getResponse reply (Quiz)");
         console.error(error.toString());
         /* debugOutput += " reply error ";
         debugOutput += error.toString();
@@ -172,7 +263,7 @@
         setLabel("debug-label", debugOutput);    */
       };
     } catch (error) {
-      console.error("Error in getChatModelResponse");
+      console.error("Error in getResponse (Quiz)");
       console.error(error.toString());
       /* debugOutput += " outer error ";
       debugOutput += error.toString();
@@ -183,25 +274,66 @@
     // if no reply was returned, an error occurred
     throw new Error('An error occurred');
   };
+
+  let questions = writable<string[]>([]);
+  // Format the response from the AI as a quiz
+  async function quizFormatter(latestResult: string)
+  {
+    // console.log(latestResult);
+    if (latestResult)
+    {
+        if (subject === 'Math')
+        {
+            const doubleQuoteRegex = /"([^"]+)"/g;
+            const singleQuoteRegex = /'([^']+)'/g;
+            let matches = [];
+            let match;
+
+        while ((match = doubleQuoteRegex.exec(latestResult)) !== null)
+            matches.push(match[1])
+        
+        // Extract and log content between single quotes
+        while ((match = singleQuoteRegex.exec(latestResult)) !== null)
+            matches.push(match[1])
+
+        let formattedQuestions = matches.map(m => {
+          let cleaned = m.replace(/[^0-9+=]/g, '');
+          let beforeEqual = cleaned.split('=')[0];
+          let spaced = beforeEqual.replace(/([0-9])([+=])/g, '$1 $2').replace(/([+=])([0-9])/g, '$1 $2');
+          return spaced;
+        });
+        questions.set(formattedQuestions);
+        
+            // for (let k = 0; k < latestResult.length; k++)
+            // {
+            //     if ()
+            //     // console.log(latestResult[k]);    
+            // }
+        }
+    }
+  }
+
 </script>
 
 <div class="flex flex-col justify-center w-full items-center">
     <h1 class="text-white mb-3 border-b-2 border-dotted border-white w-full text-center text-3xl">Quiz</h1>
     <div class="quiz">
-        {#each $results as result}
-        <div class="message">
-          {#if result.name === 'You'}
-            <div class="user-message">{result.content}</div>
-          {:else}
-            <div class="ai-message">{result.content}</div>
-          {/if}
+        {#each $questions as question, index}
+        <div class="questions">
+            <p>{index + 1}.</p>
+            {question}
+            <p style="border-1"> = </p>
+            <input type="text" class="response" bind:value={$userAnswers[index]} class:correct={$marks.length > 0 && $marks[index]} class:incorrect={$marks.length > 0 && !$marks[index]} readonly={$marks.length > 0}/>
         </div>
       {/each}
       </div>
-      <input type="text" bind:value={prompt} placeholder="Enter your prompt" />
-      <button on:click={sendPrompt}>Send</button>
-      <div id="chatinterface" class="flex flex-col p-4 pb-24 max-w-3xl mx-auto w-full">
-        <!-- {#if !$chatModelIdInitiatedGlobal}
+      <button on:click={sendUserAnswers}>Submit</button>
+
+      <div id="Quiz">
+        <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} subject={subject}/>
+    </div>
+      <!-- <div id="chatinterface" class="flex flex-col p-4 pb-24 max-w-3xl mx-auto w-full">
+        {#if !$chatModelIdInitiatedGlobal}
           <SelectModel onlyShowDownloadedModels={true} autoInitiateSelectedModel={true}/>
         {:else if isChatBoxReady}
           {#key $activeChatGlobal}
@@ -209,9 +341,34 @@
           {/key}
         {:else}
           <p>Loading chat interface...</p>
-        {/if} -->
-      </div>
+        {/if}
+      </div> -->
 </div>
 
 <style>
+    .questions
+    {
+        background-color: white;
+        border: 2px dotted;
+        border-radius: 10%;
+        padding: 20px;
+        margin: 20px;
+    }
+
+    .response
+    {
+        border: 1px solid black;
+        padding: 5px;
+    }
+
+    .correct
+    {
+      border-color: green;
+      
+    }
+
+    .incorrect
+    {
+      border-color: red;
+    }
 </style>

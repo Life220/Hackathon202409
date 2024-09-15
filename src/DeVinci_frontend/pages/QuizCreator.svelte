@@ -10,6 +10,7 @@
     import StartUpQuizPanel from "../components/StartUpQuizPanel.svelte";
     import Math from "../components/Math.svelte";
     import Quiz from "../components/Quiz.svelte";
+    import Corruption from "../components/Corruption.svelte";
   
     let subject: string | null = null;
     let topic: string | null = null;
@@ -85,10 +86,12 @@
         <img src={devincilogo} class="rotating-image w-16 h-16 p-0 m-8 rounded-full" alt="devinci logo" />
         <div id="Quiz">
           {#if topic === 'Addition'}
-            <Quiz />
+            <Quiz {subject} />
           {:else}
             {#if subject === 'Math'}
               <Math sendMessageCallbackFunction={handleTopic} />
+            {:else if subject === 'Corruption'}
+            <Quiz {subject} />
             {:else}
               <StartUpQuizPanel sendMessageCallbackFunction={handleSubject} />
             {/if}
