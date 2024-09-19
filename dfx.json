@@ -39,16 +39,20 @@
     }
   },
   "networks": {
-    "development": {
+    "ic": {
       "providers": [
-        "https://icp0.io"
+        "https://ic0.app"
       ],
       "type": "persistent"
     },
-    "testing": {
+    "development": {
       "providers": [
-        "https://icp0.io"
+        "http://localhost:3000"
       ],
+      "type": "ephemeral"
+    },
+    "testing": {
+      "providers": ["https://ic0.app"],
       "type": "persistent"
     }
   },

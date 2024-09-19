@@ -1,8 +1,11 @@
 {
   "DeVinci_backend": {
-    "ic": "3ion6-xaaaa-aaaag-alqsa-cai"
+    "ic": "b77ix-eeaaa-aaaaa-qaada-cai"
   },
   "DeVinci_frontend": {
-    "ic": "k4mni-yaaaa-aaaal-qklla-cai"
+    "ic": "by6od-j4aaa-aaaaa-qaadq-cai"
+  },
+  "internet_identity": {
+    "ic": "avqkn-guaaa-aaaaa-qaaea-cai"
   }
 }

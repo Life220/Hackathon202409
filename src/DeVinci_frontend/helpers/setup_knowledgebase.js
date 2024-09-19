@@ -8,7 +8,8 @@ let { pdfjsLib } = globalThis;
 // The workerSrc property shall be specified.
 // Check if the current environment is not localhost
 if (window.location.hostname !== 'localhost') {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.mjs';
+  // pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.mjs';
+  pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs';
 }
 
 const getDocumentContent = async (documentUrl) => {
