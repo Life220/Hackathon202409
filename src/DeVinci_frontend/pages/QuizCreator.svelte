@@ -91,7 +91,7 @@
             {#if subject === 'Math'}
               <Math sendMessageCallbackFunction={handleTopic} />
             {:else if subject === 'Corruption'}
-            <Quiz {subject} />
+            <Corruption />
             {:else}
               <StartUpQuizPanel sendMessageCallbackFunction={handleSubject} />
             {/if}

@@ -41,20 +41,21 @@
 
     function sendUserAnswers()
     {
-        const givenAnswers = getStoreValue(userAnswers);
-        // console.log("Submitted answers: ", givenAnswers);
-
-        if (subject === 'Math')
-        {
-            const calculatedAnswers = calculateAnswers();
-            const doubleUserAnswers = givenAnswers.map(answer => parseFloat(answer));
-            // console.log("After calculation: " + calculatedAnswers);
-            checkAnswers(calculatedAnswers, doubleUserAnswers);
-        }
-        else if (subject == 'Corruption')
-        {
-          
-        }
+      const givenAnswers = getStoreValue(userAnswers);
+      console.log("Submitted answers: ", givenAnswers);
+      
+      switch (subject)
+      {
+        case "Math":
+          const calculatedAnswers = calculateAnswers();
+          const doubleUserAnswers = givenAnswers.map(answer => parseFloat(answer));
+          console.log("After calculation: " + calculatedAnswers);
+          checkAnswers(calculatedAnswers, doubleUserAnswers);
+          break;
+        
+        case "Corruption":
+          break;
+      }
     }
 
     function checkAnswers(calculatedAnswers: number[], doubledUserAnswers: number[])
@@ -130,7 +131,7 @@
     }
 
     let vectorDbSearchTool;
-  let useKnowledgeBase = false;
+    let useKnowledgeBase = false;
 
   async function setVectorDbSearchTool(pathToInput) {
     vectorDbSearchTool = await getSearchVectorDbTool(pathToInput);
@@ -282,34 +283,40 @@
     // console.log(latestResult);
     if (latestResult)
     {
-        if (subject === 'Math')
-        {
-            const doubleQuoteRegex = /"([^"]+)"/g;
-            const singleQuoteRegex = /'([^']+)'/g;
-            let matches = [];
-            let match;
+      switch (subject)
+      {
+        case "Math":
+          const doubleQuoteRegex = /"([^"]+)"/g;
+          const singleQuoteRegex = /'([^']+)'/g;
+          let matches = [];
+          let match;
 
-        while ((match = doubleQuoteRegex.exec(latestResult)) !== null)
+          while ((match = doubleQuoteRegex.exec(latestResult)) !== null)
             matches.push(match[1])
-        
-        // Extract and log content between single quotes
-        while ((match = singleQuoteRegex.exec(latestResult)) !== null)
+      
+          // Extract and log content between single quotes
+          while ((match = singleQuoteRegex.exec(latestResult)) !== null)
             matches.push(match[1])
 
-        let formattedQuestions = matches.map(m => {
-          let cleaned = m.replace(/[^0-9+=]/g, '');
-          let beforeEqual = cleaned.split('=')[0];
-          let spaced = beforeEqual.replace(/([0-9])([+=])/g, '$1 $2').replace(/([+=])([0-9])/g, '$1 $2');
-          return spaced;
-        });
-        questions.set(formattedQuestions);
+          let formattedQuestions = matches.map(m => {
+            let cleaned = m.replace(/[^0-9+=]/g, '');
+            let beforeEqual = cleaned.split('=')[0];
+            let spaced = beforeEqual.replace(/([0-9])([+=])/g, '$1 $2').replace(/([+=])([0-9])/g, '$1 $2');
+            return spaced;
+          });
+          questions.set(formattedQuestions);
+      
+          // for (let k = 0; k < latestResult.length; k++)
+          // {
+          //     if ()
+          //     // console.log(latestResult[k]);    
+          // }
+          break;
         
-            // for (let k = 0; k < latestResult.length; k++)
-            // {
-            //     if ()
-            //     // console.log(latestResult[k]);    
-            // }
-        }
+        case "Corruption":
+          console.log("Chose corruption: " + latestResult);
+          break;
+      }
     }
   }
 

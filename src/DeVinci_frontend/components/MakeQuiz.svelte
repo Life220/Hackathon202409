@@ -246,7 +246,7 @@
       else
       if (subject === 'Corruption')
       {
-        message = "generate a scenarion about corruption and ask a moral question about it, put the scenraio in quotes, put the question in quotes"  
+        message = "generate a scenarion about corruption and ask a moral question about it, in format Scenario: '' and Question: ''"  
       }
       sendMessage(message);
     });
