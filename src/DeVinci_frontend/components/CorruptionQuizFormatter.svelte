@@ -27,7 +27,7 @@
     let worker: Worker;
     let prompt = '';
     let results = writable<any[]>([]);
-    let userAnswers = writable<string[]>([]);
+    let userAnswer: String;
     let marks = writable<boolean[]>([]);
 
     // onMount(() => {
@@ -38,24 +38,17 @@
     //     console.log("Test");
     // });
 
-
-    function sendUserAnswers()
+    let finalPrompt: string;
+    function sendUserAnswer()
     {
-      const givenAnswers = getStoreValue(userAnswers);
-      console.log("Submitted answers: ", givenAnswers);
-      
-      switch (subject)
-      {
-        case "Math":
-          const calculatedAnswers = calculateAnswers();
-          const doubleUserAnswers = givenAnswers.map(answer => parseFloat(answer));
-          console.log("After calculation: " + calculatedAnswers);
-          checkAnswers(calculatedAnswers, doubleUserAnswers);
-          break;
-        
-        case "Corruption":
-          break;
-      }
+        console.log("Submitted answers: ", userAnswer);
+        finalPrompt = "Given a Scenario: " +
+        Scenario + " and a Wuestion: " +
+        Question + "\n and an answer: \n" +
+        userAnswer +
+        "\n How valid is the answer given according to morals and ethics? (Only give points in a single sentence each)";
+
+        console.log(finalPrompt);
     }
 
     function checkAnswers(calculatedAnswers: number[], doubledUserAnswers: number[])
@@ -150,7 +143,8 @@
     setLabel("generate-label", message);
   };
 
-    async function getResponse(prompt, progressCallback = generateProgressCallback) {
+  // Receive response from chatbot
+  async function getResponse(prompt, progressCallback = generateProgressCallback) {
     try {
       /* debugOutput = "###in getChatModelResponse###";
       debugOutput += JSON.stringify(prompt);
@@ -252,7 +246,10 @@
         /* debugOutput += " reply ";
         debugOutput += reply;
         setLabel("debug-label", debugOutput); */
-        quizFormatter(reply);
+        if (!finalPrompt)
+            quizFormatter(reply);
+        else
+            finalResponseFormatter(reply);
         return reply;
       } catch (error) {
         console.error("Error in getResponse reply (Quiz)");
@@ -276,80 +273,65 @@
     throw new Error('An error occurred');
   };
 
-  let questions = writable<string[]>([]);
+  let Scenario;
+  let Question;
   // Format the response from the AI as a quiz
   async function quizFormatter(latestResult: string)
   {
     // console.log(latestResult);
     if (latestResult)
     {
-      switch (subject)
-      {
-        case "Math":
-          const doubleQuoteRegex = /"([^"]+)"/g;
-          const singleQuoteRegex = /'([^']+)'/g;
-          let matches = [];
-          let match;
+        // Split the string at "Scenario" and "Question" (case insensitive)
+        const scenarioRegex = /scenario:|question:/i;
+        const split = latestResult?.replace(/\*/g, '').trim().split(scenarioRegex);
 
-          while ((match = doubleQuoteRegex.exec(latestResult)) !== null)
-            matches.push(match[1])
-      
-          // Extract and log content between single quotes
-          while ((match = singleQuoteRegex.exec(latestResult)) !== null)
-            matches.push(match[1])
-
-          let formattedQuestions = matches.map(m => {
-            let cleaned = m.replace(/[^0-9+=]/g, '');
-            let beforeEqual = cleaned.split('=')[0];
-            let spaced = beforeEqual.replace(/([0-9])([+=])/g, '$1 $2').replace(/([+=])([0-9])/g, '$1 $2');
-            return spaced;
-          });
-          questions.set(formattedQuestions);
-      
-          // for (let k = 0; k < latestResult.length; k++)
-          // {
-          //     if ()
-          //     // console.log(latestResult[k]);    
-          // }
-          break;
-        
-        case "Corruption":
-          console.log("Chose corruption: " + latestResult);
-          break;
-      }
+        Scenario = split[1];
+        Question= split[2];
     }
   }
 
+  let finalResponse: string;
+  async function finalResponseFormatter(latestResult:string)
+  {
+    console.log(latestResult);
+    finalResponse = latestResult;
+  }
 </script>
 
 <div class="flex flex-col justify-center w-full items-center">
     <h1 class="text-white mb-3 border-b-2 border-dotted border-white w-full text-center text-3xl">Quiz</h1>
     <div class="quiz">
-        {#each $questions as question, index}
         <div class="questions">
-            <p>{index + 1}.</p>
-            {question}
-            <p style="border-1"> = </p>
-            <input type="text" class="response" bind:value={$userAnswers[index]} class:correct={$marks.length > 0 && $marks[index]} class:incorrect={$marks.length > 0 && !$marks[index]} readonly={$marks.length > 0}/>
+            {#if Scenario && Question}
+                <p class="bold">Scenario:</p>
+                {Scenario}
+                <p class="bold mt-2">Question:</p>
+                {Question}
+                <p class="bold mt-5">Answer:</p>
+                <textarea class="response" bind:value={userAnswer} />
+            {:else}
+                <p>Loading</p>
+            {/if}
+            {#if finalResponse}
+                <p class="bold mt-5">Results:</p>
+                <p>{finalResponse}</p>
+            {/if}
         </div>
-      {/each}
       </div>
-      <button on:click={sendUserAnswers}>Submit</button>
+      {#if Scenario && Question}
+        {#if !finalResponse}
+            <button class="submit" on:click={sendUserAnswer}>Submit</button>
+        {/if}
+        <button class="submit" on:click={sendUserAnswer}>New Quiz</button>
+      {/if}
 
       <div id="Quiz">
-        <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} subject={subject}/>
-    </div>
-      <!-- <div id="chatinterface" class="flex flex-col p-4 pb-24 max-w-3xl mx-auto w-full">
-        {#if !$chatModelIdInitiatedGlobal}
-          <SelectModel onlyShowDownloadedModels={true} autoInitiateSelectedModel={true}/>
-        {:else if isChatBoxReady}
-          {#key $activeChatGlobal}
-            <ChatBox modelCallbackFunction={getChatModelResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool}/>
-          {/key}
+        {#if !finalPrompt}
+            <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} given={subject}/>
         {:else}
-          <p>Loading chat interface...</p>
+            <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} given={finalPrompt}/>
         {/if}
-      </div> -->
+    </div>
 </div>
 
 <style>
@@ -362,20 +344,26 @@
         margin: 20px;
     }
 
+    .bold
+    {
+        font-weight: bold;
+    }
+
     .response
     {
         border: 1px solid black;
         padding: 5px;
+        width: 100%;
+        resize: vertical;
+        min-height: 2.3rem;
     }
 
-    .correct
+    .submit
     {
-      border-color: green;
-      
-    }
-
-    .incorrect
-    {
-      border-color: red;
+        background-color: white;
+        border: 2px dotted;
+        border-radius: 10%;
+        padding: 20px;
+        margin-bottom: 20px;
     }
 </style>

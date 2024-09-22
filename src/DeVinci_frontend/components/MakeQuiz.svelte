@@ -21,7 +21,7 @@
     export let modelCallbackFunction;
     export let chatDisplayed;
     export let callbackSearchVectorDbTool;
-    export let subject: string;
+    export let given: string;
   
     let newMessageText = '';
     let messages = [];
@@ -239,15 +239,19 @@
     onMount(() => {
       loadChat();
       let message;
-      if (subject === 'Math')
+
+      switch (given)
       {
-        message = "generate 10 math sums in the format 'x+y=z', put sums in quotes, no title" 
+        case 'Math':
+          message = "generate 10 math sums in the format 'x+y=z', put sums in quotes, no title";
+          break;
+        case 'Corruption':
+          message = "generate a scenarion about corruption and ask a moral question about it, in format 'Scenario:' and 'Question:'";
+          break;
+        default:
+          message = given;
       }
-      else
-      if (subject === 'Corruption')
-      {
-        message = "generate a scenarion about corruption and ask a moral question about it, in format Scenario: '' and Question: ''"  
-      }
+      
       sendMessage(message);
     });
   </script>

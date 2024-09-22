@@ -9,7 +9,7 @@
     import DeVinci from "./deVinci.svelte";
     import StartUpQuizPanel from "../components/StartUpQuizPanel.svelte";
     import Math from "../components/Math.svelte";
-    import Quiz from "../components/Quiz.svelte";
+    import Quiz from "../components/MathQuizFormatter.svelte";
     import Corruption from "../components/Corruption.svelte";
   
     let subject: string | null = null;
