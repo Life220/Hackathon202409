@@ -23,7 +23,6 @@
     // Reactive statement to check if the user has already downloaded at least one AI model
     $: userHasDownloadedAtLeastOneModel = userHasDownloadedModel();
 
-    export let subject: string;
     let worker: Worker;
     let prompt = '';
     let results = writable<any[]>([]);
@@ -44,18 +43,10 @@
       const givenAnswers = getStoreValue(userAnswers);
       console.log("Submitted answers: ", givenAnswers);
       
-      switch (subject)
-      {
-        case "Math":
-          const calculatedAnswers = calculateAnswers();
-          const doubleUserAnswers = givenAnswers.map(answer => parseFloat(answer));
-          console.log("After calculation: " + calculatedAnswers);
-          checkAnswers(calculatedAnswers, doubleUserAnswers);
-          break;
-        
-        case "Corruption":
-          break;
-      }
+      const calculatedAnswers = calculateAnswers();
+      const doubleUserAnswers = givenAnswers.map(answer => parseFloat(answer));
+      console.log("After calculation: " + calculatedAnswers);
+      checkAnswers(calculatedAnswers, doubleUserAnswers);
     }
 
     function checkAnswers(calculatedAnswers: number[], doubledUserAnswers: number[])
@@ -284,41 +275,25 @@
     // console.log(latestResult);
     if (latestResult)
     {
-      switch (subject)
-      {
-        case "Math":
-          const doubleQuoteRegex = /"([^"]+)"/g;
-          const singleQuoteRegex = /'([^']+)'/g;
-          let matches = [];
-          let match;
+      const doubleQuoteRegex = /"([^"]+)"/g;
+      const singleQuoteRegex = /'([^']+)'/g;
+      let matches = [];
+      let match;
 
-          while ((match = doubleQuoteRegex.exec(latestResult)) !== null)
-            matches.push(match[1])
-      
-          // Extract and log content between single quotes
-          while ((match = singleQuoteRegex.exec(latestResult)) !== null)
-            matches.push(match[1])
+      while ((match = doubleQuoteRegex.exec(latestResult)) !== null)
+        matches.push(match[1])
+  
+      // Extract and log content between single quotes
+      while ((match = singleQuoteRegex.exec(latestResult)) !== null)
+        matches.push(match[1])
 
-          let formattedQuestions = matches.map(m => {
-            let cleaned = m.replace(/[^0-9+=]/g, '');
-            let beforeEqual = cleaned.split('=')[0];
-            let spaced = beforeEqual.replace(/([0-9])([+=])/g, '$1 $2').replace(/([+=])([0-9])/g, '$1 $2');
-            return spaced;
-          });
-          questions.set(formattedQuestions);
-          break;
-        
-        case "Corruption":
-          // Split the string at "Scenario" and "Question" (case insensitive)
-          const scenarioRegex = /scenario|question/i;
-          const Scenario = latestResult.split(scenarioRegex);
-
-          console.log("Given: " + latestResult + " thennnn:");
-          console.log("Scenario: " + Scenario[1]);
-          console.log("Question: " + Scenario[2]);
-          questions.set([Scenario[1]]);
-          break;
-      }
+      let formattedQuestions = matches.map(m => {
+        let cleaned = m.replace(/[^0-9+=]/g, '');
+        let beforeEqual = cleaned.split('=')[0];
+        let spaced = beforeEqual.replace(/([0-9])([+=])/g, '$1 $2').replace(/([+=])([0-9])/g, '$1 $2');
+        return spaced;
+      });
+      questions.set(formattedQuestions);
     }
   }
 
@@ -339,7 +314,7 @@
       <button on:click={sendUserAnswers}>Submit</button>
 
       <div id="Quiz">
-        <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} subject={subject}/>
+        <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} given={"Math"}/>
     </div>
       <!-- <div id="chatinterface" class="flex flex-col p-4 pb-24 max-w-3xl mx-auto w-full">
         {#if !$chatModelIdInitiatedGlobal}

@@ -9,7 +9,6 @@
     import DeVinci from "./deVinci.svelte";
     import StartUpQuizPanel from "../components/StartUpQuizPanel.svelte";
     import Math from "../components/Math.svelte";
-    import Quiz from "../components/MathQuizFormatter.svelte";
     import Corruption from "../components/Corruption.svelte";
   
     let subject: string | null = null;
@@ -19,12 +18,7 @@
     {
       subject = message;
     }
-
-    function handleTopic(message: string)
-    {
-      topic = message;
-    }
-
+    
     onMount(() => {
       const sidebarToggle = document.getElementById('sidebarToggle');
       const chat = document.getElementById('chat');
@@ -85,16 +79,12 @@
       <main id="QuizMain" class="pt-8 pb-16 lg:pt-8 lg:pb-24 bg-slate-100 dark:bg-gray-900 antialiased">
         <img src={devincilogo} class="rotating-image w-16 h-16 p-0 m-8 rounded-full" alt="devinci logo" />
         <div id="Quiz">
-          {#if topic === 'Addition'}
-            <Quiz {subject} />
+          {#if subject === 'Math'}
+            <Math />
+          {:else if subject === 'Corruption'}
+          <Corruption />
           {:else}
-            {#if subject === 'Math'}
-              <Math sendMessageCallbackFunction={handleTopic} />
-            {:else if subject === 'Corruption'}
-            <Corruption />
-            {:else}
-              <StartUpQuizPanel sendMessageCallbackFunction={handleSubject} />
-            {/if}
+            <StartUpQuizPanel sendMessageCallbackFunction={handleSubject} />
           {/if}
         </div>
       </main>

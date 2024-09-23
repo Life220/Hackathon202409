@@ -29,6 +29,7 @@
     let results = writable<any[]>([]);
     let userAnswer: String;
     let marks = writable<boolean[]>([]);
+      const key = writable(0);
 
     // onMount(() => {
     //     worker = new Worker('/src/DeVinci_frontend/assets/worker.ts');
@@ -293,11 +294,20 @@
   let finalResponse: string;
   async function finalResponseFormatter(latestResult:string)
   {
-    console.log(latestResult);
     finalResponse = latestResult;
+  }
+
+    // Function to reset the component
+  function resetComponent()
+  {
+    Scenario = "";
+    Question = "";
+    finalResponse = ""
+    key.update(n => n + 1);
   }
 </script>
 
+{#key $key}
 <div class="flex flex-col justify-center w-full items-center">
     <h1 class="text-white mb-3 border-b-2 border-dotted border-white w-full text-center text-3xl">Quiz</h1>
     <div class="quiz">
@@ -322,7 +332,7 @@
         {#if !finalResponse}
             <button class="submit" on:click={sendUserAnswer}>Submit</button>
         {/if}
-        <button class="submit" on:click={sendUserAnswer}>New Quiz</button>
+        <button class="submit" on:click={resetComponent}>New Quiz</button>
       {/if}
 
       <div id="Quiz">
@@ -333,6 +343,7 @@
         {/if}
     </div>
 </div>
+{/key}
 
 <style>
     .questions
