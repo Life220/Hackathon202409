@@ -10,6 +10,7 @@
     import StartUpQuizPanel from "../components/StartUpQuizPanel.svelte";
     import Math from "../components/Math.svelte";
     import Corruption from "../components/Corruption.svelte";
+    import QuizNav from "../components/quizNav.svelte";
   
     let subject: string | null = null;
     let topic: string | null = null;
@@ -84,6 +85,7 @@
           {:else if subject === 'Corruption'}
           <Corruption />
           {:else}
+            <QuizNav currentComponent="Subject"/>
             <StartUpQuizPanel sendMessageCallbackFunction={handleSubject} />
           {/if}
         </div>

@@ -1,7 +1,11 @@
-<script lang="ts">  
+<script lang="ts">
+    import { onMount } from "svelte";
+  
   // export let sendMessageCallbackFunction;
 
   import Quiz from "./CorruptionQuizFormatter.svelte";
+  import QuizNav from "./quizNav.svelte";
+
   let initialPage = true;
 
   function quizMe()
@@ -16,6 +20,7 @@
 </script>
 
 <div>
+  <QuizNav currentComponent="Corruption" />
   <div class="flex flex-col justify-center w-full items-center">
     {#if initialPage}
       <h1 class="text-white mb-3 border-b-2 border-dotted border-white w-full text-center text-3xl">Corruption</h1>

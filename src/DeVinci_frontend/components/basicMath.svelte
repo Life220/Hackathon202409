@@ -3,6 +3,7 @@
     import MathQuizFormatter from "./MathQuizFormatter.svelte"; 
     import { Add, string } from "@tensorflow/tfjs-core";
     import { writable } from "svelte/store";
+    import QuizNav from "./quizNav.svelte";
 
     let makeQuiz = false;
     // Topics
@@ -34,6 +35,10 @@
 </script>
 
 <div>
+  {#if makeQuiz}
+    <MathQuizFormatter />
+  {:else}
+    <QuizNav />
     <h1 class="text-white mb-3 border-b-2 border-dotted border-white w-full text-center text-3xl">Select a Topic</h1>
 
     <div class="flex flex-col gap-4 w-full">
@@ -94,10 +99,7 @@
       </div>
       <button class="text-white border-2 p-3 w-36 self-center" on:click={quizMe}>Quiz me</button>
     </div>
-
-    {#if makeQuiz}
-        <MathQuizFormatter />
-    {/if}
+  {/if}
 </div>
 
 <style>

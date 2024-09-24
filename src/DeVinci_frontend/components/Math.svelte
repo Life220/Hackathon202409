@@ -1,5 +1,6 @@
 <script lang="ts">  
   import BasicMath from "./basicMath.svelte";
+  import QuizNav from "./quizNav.svelte";
 
   let section: string;
   function setSection(newSection: string)
@@ -16,9 +17,8 @@
     <BasicMath />
   {:else if section == "Advanced"}
   {:else}
+    <QuizNav currentComponent="Math"/>
     <div class="flex flex-col justify-center w-full items-center">
-      <button class="text-white border-2 p-3 mt-4">Go Back</button>
-
       <h1 class="text-white mb-3 border-b-2 border-dotted border-white w-full text-center text-3xl">Choose a Section</h1>
 
       <div class="flex flex-col gap-4 w-full">
