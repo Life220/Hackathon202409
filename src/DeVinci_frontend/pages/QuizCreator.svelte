@@ -49,6 +49,13 @@
         chat.removeEventListener('click', stopPropagation);
       };
     });
+
+    // let currentComponent = "";
+    // function handleNavClicked(event)
+    // {
+    //     currentComponent = event.detail.nav;
+    //     console.log("Subject heard :" + currentComponent);
+    // }
 </script>
   
   <div class="flex flex-row h-screen">
@@ -85,7 +92,7 @@
           {:else if subject === 'Corruption'}
           <Corruption />
           {:else}
-            <QuizNav currentComponent="Subject"/>
+            <!-- <QuizNav currentComponent="Subject" on:navClicked={handleNavClicked} /> -->
             <StartUpQuizPanel sendMessageCallbackFunction={handleSubject} />
           {/if}
         </div>

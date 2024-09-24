@@ -1,44 +1,50 @@
 <script lang="ts">
-    import { Empty } from "@dfinity/candid/lib/cjs/idl";
-    import MathQuizFormatter from "./MathQuizFormatter.svelte"; 
-    import { Add, string } from "@tensorflow/tfjs-core";
-    import { writable } from "svelte/store";
-    import QuizNav from "./quizNav.svelte";
+  import { Empty } from "@dfinity/candid/lib/cjs/idl";
+  import MathQuizFormatter from "./MathQuizFormatter.svelte"; 
+  import { Add, string } from "@tensorflow/tfjs-core";
+  import { writable } from "svelte/store";
+  import QuizNav from "./quizNav.svelte";
 
-    let makeQuiz = false;
-    // Topics
-    const Addition = 'Addition';
-    const Subtraction = 'Subtraction';
-    const Multiplication = 'Multiplication';
-    const Division = 'Division';
-    const Square = 'Square';
-    const Cube = 'Cube';
-    const Power = 'Power';
+  let makeQuiz = false;
+  // Topics
+  const Addition = 'Addition';
+  const Subtraction = 'Subtraction';
+  const Multiplication = 'Multiplication';
+  const Division = 'Division';
+  const Square = 'Square';
+  const Cube = 'Cube';
+  const Power = 'Power';
 
-    let topics = writable<string[]>([]);
-    function handleTopic(topic: string)
-    {
-        topics.update(currentTopics => {
-            if (currentTopics.includes(topic))
-                return currentTopics.filter(t => t !== topic);
-            else
-                return [...currentTopics, topic];
-        });
-    }
+  let topics = writable<string[]>([]);
+  function handleTopic(topic: string)
+  {
+      topics.update(currentTopics => {
+          if (currentTopics.includes(topic))
+              return currentTopics.filter(t => t !== topic);
+          else
+              return [...currentTopics, topic];
+      });
+  }
 
-    function quizMe()
-    {
-        makeQuiz = true;
-        console.log("Selected: " + $topics);
-    }
+  function quizMe()
+  {
+      makeQuiz = true;
+      console.log("Selected: " + $topics);
+  }
 
+  // let currentComponent = "";
+  // function handleNavClicked(event)
+  // {
+  //     currentComponent = event.detail.nav;
+  //     console.log("Subject heard on Math");
+  // }
 </script>
 
 <div>
   {#if makeQuiz}
     <MathQuizFormatter />
   {:else}
-    <QuizNav />
+  <!-- <QuizNav currentComponent="Basic" on:navClicked={handleNavClicked} /> -->
     <h1 class="text-white mb-3 border-b-2 border-dotted border-white w-full text-center text-3xl">Select a Topic</h1>
 
     <div class="flex flex-col gap-4 w-full">

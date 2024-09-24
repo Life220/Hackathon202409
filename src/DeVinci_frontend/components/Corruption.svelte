@@ -20,7 +20,7 @@
 </script>
 
 <div>
-  <QuizNav currentComponent="Corruption" />
+  <!-- <QuizNav currentComponent="Corruption" /> -->
   <div class="flex flex-col justify-center w-full items-center">
     {#if initialPage}
       <h1 class="text-white mb-3 border-b-2 border-dotted border-white w-full text-center text-3xl">Corruption</h1>
