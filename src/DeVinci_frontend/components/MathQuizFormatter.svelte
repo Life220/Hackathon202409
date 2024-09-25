@@ -313,13 +313,15 @@
   }
 </script>
 
+{#key $key}
 <div class="w-full">
   <img src={arrow} alt="|" class="back">
   <button class="btnBack" on:click={back}>Quiz</button>
   
   <div class="flex flex-col justify-center w-full items-center">
     <h1 class="text-white mb-3 border-b-2 border-dotted border-white w-full text-center text-3xl">Quiz</h1>
-    <div class="quiz">
+    {#if $questions.length > 0}
+      <div class="quiz">
         {#each $questions as question, index}
         <div class="questions">
           <p>{index + 1}.</p>
@@ -331,6 +333,9 @@
       </div>
       <button class="submit" on:click={sendUserAnswers}>Submit</button>
       <button class="submit" on:click={resetComponent}>New Quiz</button>
+    {:else}
+      <p class="questions">Loading</p>
+    {/if}
 
       <div id="Quiz">
         <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} given={"Math"}/>
@@ -348,6 +353,7 @@
       </div> -->
   </div>
 </div>
+{/key}
 
 <style>
   .questions
