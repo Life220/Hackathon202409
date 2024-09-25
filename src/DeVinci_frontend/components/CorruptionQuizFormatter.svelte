@@ -73,6 +73,7 @@
 
     function calculateAnswers()
     {
+        //Check
         const currentQuestions = getStoreValue(questions);
         let calculatedAnswers = [];
 
