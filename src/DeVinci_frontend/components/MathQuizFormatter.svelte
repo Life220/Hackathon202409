@@ -29,6 +29,7 @@
     let results = writable<any[]>([]);
     let userAnswers = writable<string[]>([]);
     let marks = writable<boolean[]>([]);
+    const key = writable(0);
 
     // onMount(() => {
     //     worker = new Worker('/src/DeVinci_frontend/assets/worker.ts');
@@ -298,6 +299,14 @@
     }
   }
 
+  function resetComponent()
+  {
+    questions.set([]);
+    marks.set([]);
+    results.set([]);
+    key.update(n => n + 1);
+  }
+
   function back()
   {
     // Do nothing
@@ -313,18 +322,19 @@
     <div class="quiz">
         {#each $questions as question, index}
         <div class="questions">
-            <p>{index + 1}.</p>
-            {question}
-            <p style="border-1"> = </p>
-            <input type="text" class="response" bind:value={$userAnswers[index]} class:correct={$marks.length > 0 && $marks[index]} class:incorrect={$marks.length > 0 && !$marks[index]} readonly={$marks.length > 0}/>
+          <p>{index + 1}.</p>
+          {question}
+          <p style="border-1"> = </p>
+          <input type="text" class="response" bind:value={$userAnswers[index]} class:correct={$marks.length > 0 && $marks[index]} class:incorrect={$marks.length > 0 && !$marks[index]} readonly={$marks.length > 0}/>
         </div>
       {/each}
       </div>
-      <button on:click={sendUserAnswers}>Submit</button>
+      <button class="submit" on:click={sendUserAnswers}>Submit</button>
+      <button class="submit" on:click={resetComponent}>New Quiz</button>
 
       <div id="Quiz">
         <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} given={"Math"}/>
-    </div>
+      </div>
       <!-- <div id="chatinterface" class="flex flex-col p-4 pb-24 max-w-3xl mx-auto w-full">
         {#if !$chatModelIdInitiatedGlobal}
           <SelectModel onlyShowDownloadedModels={true} autoInitiateSelectedModel={true}/>
@@ -340,29 +350,38 @@
 </div>
 
 <style>
-    .questions
-    {
-        background-color: white;
-        border: 2px dotted;
-        border-radius: 10%;
-        padding: 20px;
-        margin: 20px;
-    }
+  .questions
+  {
+      background-color: white;
+      border: 2px dotted;
+      border-radius: 10%;
+      padding: 20px;
+      margin: 20px;
+  }
 
-    .response
-    {
-        border: 1px solid black;
-        padding: 5px;
-    }
+  .response
+  {
+      border: 1px solid black;
+      padding: 5px;
+  }
 
-    .correct
-    {
-      border-color: green;
-      
-    }
+  .correct
+  {
+    border-color: green;
+    
+  }
 
-    .incorrect
-    {
-      border-color: red;
-    }
+  .incorrect
+  {
+    border-color: red;
+  }
+
+  .submit
+  {
+    background-color: white;
+    border: 2px dotted;
+    border-radius: 10%;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
 </style>

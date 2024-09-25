@@ -25,12 +25,9 @@
   $: userHasDownloadedAtLeastOneModel = userHasDownloadedModel();
 
   export let subject: string;
-  let worker: Worker;
-  let prompt = '';
-  let results = writable<any[]>([]);
   let userAnswer: String;
   let marks = writable<boolean[]>([]);
-    const key = writable(0);
+  const key = writable(0);
 
   // onMount(() => {
   //     worker = new Worker('/src/DeVinci_frontend/assets/worker.ts');
@@ -245,7 +242,6 @@
     finalResponse = latestResult;
   }
 
-    // Function to reset the component
   function resetComponent()
   {
     Scenario = "";
