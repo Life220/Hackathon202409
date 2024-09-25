@@ -1,133 +1,79 @@
 <script lang="ts">
-    import { onMount, afterUpdate } from "svelte";
-    import { writable, get as getStoreValue } from "svelte/store";
-    import Message from "./Message.svelte";
-    import {
-    chatModelGlobal,
-    activeChatGlobal,
-    chatModelIdInitiatedGlobal,
-    } from "../store";
-    import InstallToastNotification from './InstallToastNotification.svelte'; //TODO: move
-    import {
-        getSearchVectorDbTool,
-        //storeEmbeddings,
-        //loadExistingVectorStore,
-        //checkUserHasKnowledgeBase
-    } from "../helpers/vector_database";
-    import SelectModel from "./SelectModel.svelte";
-    import MakeQuiz from "./MakeQuiz.svelte";
-    import { userHasDownloadedModel } from "../helpers/localStorage";
-    import { get } from "http";
-    import { slice } from "@tensorflow/tfjs-core";
-    import arrow from "../assets/arrow.png";
+  import { onMount, afterUpdate } from "svelte";
+  import { writable, get as getStoreValue } from "svelte/store";
+  import Message from "./Message.svelte";
+  import {
+  chatModelGlobal,
+  activeChatGlobal,
+  chatModelIdInitiatedGlobal,
+  } from "../store";
+  import InstallToastNotification from './InstallToastNotification.svelte'; //TODO: move
+  import {
+    getSearchVectorDbTool,
+    //storeEmbeddings,
+    //loadExistingVectorStore,
+    //checkUserHasKnowledgeBase
+  } from "../helpers/vector_database";
+  import SelectModel from "./SelectModel.svelte";
+  import MakeQuiz from "./MakeQuiz.svelte";
+  import { userHasDownloadedModel } from "../helpers/localStorage";
+  import { get } from "http";
+  import { slice } from "@tensorflow/tfjs-core";
+  import arrow from "../assets/arrow.png";
 
-    // Reactive statement to check if the user has already downloaded at least one AI model
-    $: userHasDownloadedAtLeastOneModel = userHasDownloadedModel();
+  // Reactive statement to check if the user has already downloaded at least one AI model
+  $: userHasDownloadedAtLeastOneModel = userHasDownloadedModel();
 
-    export let subject: string;
-    let worker: Worker;
-    let prompt = '';
-    let results = writable<any[]>([]);
-    let userAnswer: String;
-    let marks = writable<boolean[]>([]);
-      const key = writable(0);
+  export let subject: string;
+  let worker: Worker;
+  let prompt = '';
+  let results = writable<any[]>([]);
+  let userAnswer: String;
+  let marks = writable<boolean[]>([]);
+    const key = writable(0);
 
-    // onMount(() => {
-    //     worker = new Worker('/src/DeVinci_frontend/assets/worker.ts');
-    //     worker.onmessage = (event) => {
-    //         results.update(msgs => [...msgs, { name: 'DeVinci', content: event.data }]);
-    //     }
-    //     console.log("Test");
-    // });
+  // onMount(() => {
+  //     worker = new Worker('/src/DeVinci_frontend/assets/worker.ts');
+  //     worker.onmessage = (event) => {
+  //         results.update(msgs => [...msgs, { name: 'DeVinci', content: event.data }]);
+  //     }
+  //     console.log("Test");
+  // });
 
-    let finalPrompt: string;
-    function sendUserAnswer()
-    {
-        console.log("Submitted answers: ", userAnswer);
-        finalPrompt = "Given a Scenario: " +
-        Scenario + " and a Wuestion: " +
-        Question + "\n and an answer: \n" +
-        userAnswer +
-        "\n How valid is the answer given according to morals and ethics? (Only give points in a single sentence each)";
+  let finalPrompt: string;
+  function sendUserAnswer()
+  {
+      console.log("Submitted answers: ", userAnswer);
+      finalPrompt = "Given a Scenario: " +
+      Scenario + " and a Wuestion: " +
+      Question + "\n and an answer: \n" +
+      userAnswer +
+      "\n How valid is the answer given according to morals and ethics? (Only give points in a single sentence each)";
 
-        console.log(finalPrompt);
-    }
+      console.log(finalPrompt);
+  }
 
-    function checkAnswers(calculatedAnswers: number[], doubledUserAnswers: number[])
-    {
-      let marksArr = [];
+  function checkAnswers(calculatedAnswers: number[], doubledUserAnswers: number[])
+  {
+    let marksArr = [];
 
-      calculatedAnswers.forEach((answer, index) => {
-        if (index < doubledUserAnswers.length)
-        {
-          if (answer == doubledUserAnswers[index])
-            marksArr.push(true);
-          else
-            marksArr.push(false);
-        }
+    calculatedAnswers.forEach((answer, index) => {
+      if (index < doubledUserAnswers.length)
+      {
+        if (answer == doubledUserAnswers[index])
+          marksArr.push(true);
         else
           marksArr.push(false);
-      });
-      marks.set(marksArr);
-    }
+      }
+      else
+        marksArr.push(false);
+    });
+    marks.set(marksArr);
+  }
 
-    function calculateAnswers()
-    {
-        //Check
-        const currentQuestions = getStoreValue(questions);
-        let calculatedAnswers = [];
 
-        currentQuestions.forEach(question => {
-            let variables = [];
-            let signs = [];
-            let currentVariable = '';
-            let finalResult;
-
-            for (let k = 0; k < question.length; k++)
-            {
-                const char = question[k];
-                if (!isNaN(parseFloat(char)))
-                {
-                    currentVariable += char;
-                }
-                else if (char != ' ')
-                {
-                    if (currentVariable)
-                    {
-                        variables.push(parseFloat(currentVariable));
-                        currentVariable = '';
-                    }
-                    signs.push(char);
-                }
-            }
-            if (currentVariable)
-                variables.push(parseFloat(currentVariable));
-
-            // Create expression
-            let expression = variables[0].toString();
-            for (let k = 0; k < signs.length; k++)
-            {
-                expression += `${signs[k]} ${variables[k+1]}`;
-            }
-
-            // Evaluate the expression
-            try
-            {
-                finalResult = new Function(`return ${expression}`)();
-                calculatedAnswers.push(finalResult);
-            }
-            catch (error)
-            {
-                console.error(`Error evaluating expression: ${expression}`);
-                console.error(error);
-            }
-        });
-
-        return calculatedAnswers;
-    }
-
-    let vectorDbSearchTool;
-    let useKnowledgeBase = false;
+  let vectorDbSearchTool;
+  let useKnowledgeBase = false;
 
   async function setVectorDbSearchTool(pathToInput) {
     vectorDbSearchTool = await getSearchVectorDbTool(pathToInput);
@@ -284,12 +230,12 @@
     // console.log(latestResult);
     if (latestResult)
     {
-        // Split the string at "Scenario" and "Question" (case insensitive)
-        const scenarioRegex = /scenario:|question:/i;
-        const split = latestResult?.replace(/\*/g, '').trim().split(scenarioRegex);
+      // Split the string at "Scenario" and "Question" (case insensitive)
+      const scenarioRegex = /scenario:|question:/i;
+      const split = latestResult?.replace(/\*/g, '').trim().split(scenarioRegex);
 
-        Scenario = split[1];
-        Question= split[2];
+      Scenario = split[1];
+      Question= split[2];
     }
   }
 
@@ -324,18 +270,18 @@
     <div class="quiz">
         <div class="questions">
             {#if Scenario && Question}
-                <p class="bold">Scenario:</p>
-                {Scenario}
-                <p class="bold mt-2">Question:</p>
-                {Question}
-                <p class="bold mt-5">Answer:</p>
-                <textarea class="response" bind:value={userAnswer} />
+              <p class="bold">Scenario:</p>
+              {Scenario}
+              <p class="bold mt-2">Question:</p>
+              {Question}
+              <p class="bold mt-5">Answer:</p>
+              <textarea class="response" bind:value={userAnswer} />
             {:else}
-                <p>Loading</p>
+              <p>Loading</p>
             {/if}
             {#if finalResponse}
-                <p class="bold mt-5">Results:</p>
-                <p>{finalResponse}</p>
+              <p class="bold mt-5">Results:</p>
+              <p>{finalResponse}</p>
             {/if}
         </div>
       </div>
@@ -348,9 +294,9 @@
   
       <div id="Quiz">
         {#if !finalPrompt}
-            <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} given={subject}/>
+          <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} given={subject}/>
         {:else}
-            <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} given={finalPrompt}/>
+          <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} given={finalPrompt}/>
         {/if}
     </div>
   </div>
@@ -358,35 +304,35 @@
 {/key}
 
 <style>
-    .questions
-    {
-        background-color: white;
-        border: 2px dotted;
-        border-radius: 10%;
-        padding: 20px;
-        margin: 20px;
-    }
+  .questions
+  {
+    background-color: white;
+    border: 2px dotted;
+    border-radius: 10%;
+    padding: 20px;
+    margin: 20px;
+  }
 
-    .bold
-    {
-        font-weight: bold;
-    }
+  .bold
+  {
+    font-weight: bold;
+  }
 
-    .response
-    {
-        border: 1px solid black;
-        padding: 5px;
-        width: 100%;
-        resize: vertical;
-        min-height: 2.3rem;
-    }
+  .response
+  {
+    border: 1px solid black;
+    padding: 5px;
+    width: 100%;
+    resize: vertical;
+    min-height: 2.3rem;
+  }
 
-    .submit
-    {
-        background-color: white;
-        border: 2px dotted;
-        border-radius: 10%;
-        padding: 20px;
-        margin-bottom: 20px;
-    }
+  .submit
+  {
+    background-color: white;
+    border: 2px dotted;
+    border-radius: 10%;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
 </style>
