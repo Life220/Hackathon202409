@@ -1,34 +1,25 @@
 <script lang="ts">
     import { writable } from "svelte/store";
     import arrow from "../assets/arrow.png";
-    import { createEventDispatcher, onMount } from "svelte";
 
     let components = writable<String[]>([]);
-    export let currentComponent: String;
+    let currentComponent: String;
 
-    const dispatch = createEventDispatcher();
-    export function clickedNav()
+    export function makeNav(comp: string)
     {
-        const nav = "Subject"; // Set the nav value
-        console.log("clicked:" + nav);
-        dispatch("navClicked", { nav });
+        currentComponent = comp;
     }
-    // let currentComponent = writable<String>("Subject");
-        onMount(() => {
-        // Initialize the components array with the current component
-        components.update(current => {
-            if (!current.includes(currentComponent)) {
-                return [...current, currentComponent];
-            }
-            return current;
-        });
-        // Log the initial components array
-        console.log("Initial components array:", $components);
-    });
+
+    // let clicked = writable<string>("");
+    function clickedNav(comp: string)
+    {
+        // clicked.set(comp);
+        console.log("Clicked component:", comp);
+    }
 </script>
 
 <div class="devinci-topnav flex items-center flex-wrap p-3 text-l font-bold text-white">
-    <button on:click={clickedNav}>Subject</button>
+    <button on:click={() => clickedNav("Subject")}>Subject</button>
     {#if currentComponent}
         {#if $components.includes("Math")}
             <img src={arrow} class="arrow"/>

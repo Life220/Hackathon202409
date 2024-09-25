@@ -1,13 +1,21 @@
 <script lang="ts">  
   import BasicMath from "./basicMath.svelte";
   import QuizNav from "./quizNav.svelte";
+  import arrow from "../assets/arrow.png";
 
   let section: string;
   function setSection(newSection: string)
   {
     section = newSection;
-  };
+    current = false;
+  }
 
+  let current = true;
+  function back()
+  {
+    current = true;
+  }
+  
   // let currentComponent = "";
   // function handleNavClicked(event)
   // {
@@ -17,11 +25,15 @@
 </script>
 
 <div>
+  <img src={arrow} alt="|" class="back">
+  <button class="btnBack" on:click={back}>Math</button>
   <!-- {#if currentComponent == "" || currentComponent == "Math"} -->
-  {#if section == "Basic"}
-    <BasicMath />
-  {:else if section == "Advanced"}
-    <h1>Not yet implemented</h1>
+  {#if !current}
+    {#if section == "Basic"}
+      <BasicMath />
+    {:else if section == "Advanced"}
+      <h1>Not yet implemented</h1>
+    {/if}
   {:else}
     <!-- <QuizNav currentComponent="Math" on:navClicked={handleNavClicked} /> -->
     <div class="flex flex-col justify-center w-full items-center">
@@ -43,7 +55,7 @@
             </div>
           </div>
       </div>
-    {/if}
+  {/if}
   <!-- {/if} -->
 </div>
 

@@ -19,6 +19,7 @@
     import { userHasDownloadedModel } from "../helpers/localStorage";
     import { get } from "http";
     import { slice } from "@tensorflow/tfjs-core";
+    import arrow from "../assets/arrow.png";
 
     // Reactive statement to check if the user has already downloaded at least one AI model
     $: userHasDownloadedAtLeastOneModel = userHasDownloadedModel();
@@ -305,10 +306,19 @@
     finalResponse = ""
     key.update(n => n + 1);
   }
+
+  function back()
+  {
+    // Do nothing
+  }
 </script>
 
 {#key $key}
-<div class="flex flex-col justify-center w-full items-center">
+<div class=" w-full">
+  <img src={arrow} alt="|" class="back">
+  <button class="btnBack" on:click={back}>Quiz</button>
+  <div class="flex flex-col justify-center w-full items-center">
+
     <h1 class="text-white mb-3 border-b-2 border-dotted border-white w-full text-center text-3xl">Quiz</h1>
     <div class="quiz">
         <div class="questions">
@@ -330,11 +340,11 @@
       </div>
       {#if Scenario && Question}
         {#if !finalResponse}
-            <button class="submit" on:click={sendUserAnswer}>Submit</button>
+          <button class="submit" on:click={sendUserAnswer}>Submit</button>
         {/if}
         <button class="submit" on:click={resetComponent}>New Quiz</button>
       {/if}
-
+  
       <div id="Quiz">
         {#if !finalPrompt}
             <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} given={subject}/>
@@ -342,6 +352,7 @@
             <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} given={finalPrompt}/>
         {/if}
     </div>
+  </div>
 </div>
 {/key}
 

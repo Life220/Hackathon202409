@@ -11,8 +11,10 @@
     import Math from "../components/Math.svelte";
     import Corruption from "../components/Corruption.svelte";
     import QuizNav from "../components/quizNav.svelte";
+    import arrow from "../assets/arrow.png";
+    import { sub } from "@tensorflow/tfjs-core";
   
-    let subject: string | null = null;
+    let subject: string = "";
     let topic: string | null = null;
 
     function handleSubject(message: string)
@@ -50,12 +52,17 @@
       };
     });
 
-    // let currentComponent = "";
-    // function handleNavClicked(event)
-    // {
-    //     currentComponent = event.detail.nav;
-    //     console.log("Subject heard :" + currentComponent);
-    // }
+    function back()
+    {
+      subject = "";
+    }
+
+    let currentComponent = "";
+    function handleNavClicked(event)
+    {
+        currentComponent = event.detail.nav;
+        console.log("Subject heard :" + currentComponent);
+    }
 </script>
   
   <div class="flex flex-row h-screen">
@@ -87,12 +94,15 @@
       <main id="QuizMain" class="pt-8 pb-16 lg:pt-8 lg:pb-24 bg-slate-100 dark:bg-gray-900 antialiased">
         <img src={devincilogo} class="rotating-image w-16 h-16 p-0 m-8 rounded-full" alt="devinci logo" />
         <div id="Quiz">
-          {#if subject === 'Math'}
-            <Math />
-          {:else if subject === 'Corruption'}
-          <Corruption />
+          {#if subject != ""}
+            <button class="btnBack" on:click={back}>Subject</button>
+            {#if subject === 'Math'}
+              <Math />
+            {:else if subject === 'Corruption'}
+            <Corruption />
+          {/if}
           {:else}
-            <!-- <QuizNav currentComponent="Subject" on:navClicked={handleNavClicked} /> -->
+            <!-- <QuizNav on:navClicked={handleNavClicked} /> -->
             <StartUpQuizPanel sendMessageCallbackFunction={handleSubject} />
           {/if}
         </div>
@@ -102,24 +112,37 @@
     </main>
   </div>
   
-  <style global>
-      .footer {
-          background: rgba(255,255,255,1);
-          padding-top: 10px;
-      }
+<style global>
+  .footer
+  {
+    background: rgba(255,255,255,1);
+    padding-top: 10px;
+  }
 
-      #QuizMain
-      {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 100%;
-        overflow: auto;
-      }
+  #QuizMain
+  {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    overflow: auto;
+  }
 
-      #Quiz
-      {
-        width: 90%;
-        max-width: 50rem;
-      }
-  </style>  
+  #Quiz
+  {
+    width: 90%;
+    max-width: 50rem;
+  }
+
+  .back
+  {
+    rotate: 90deg;
+    height: 0.7rem;
+  }
+ 
+  .btnBack
+  {
+    display: block;
+    color: beige;
+  }
+</style>  

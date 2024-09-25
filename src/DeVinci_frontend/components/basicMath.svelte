@@ -4,6 +4,7 @@
   import { Add, string } from "@tensorflow/tfjs-core";
   import { writable } from "svelte/store";
   import QuizNav from "./quizNav.svelte";
+  import arrow from "../assets/arrow.png";
 
   let makeQuiz = false;
   // Topics
@@ -29,7 +30,14 @@
   function quizMe()
   {
       makeQuiz = true;
+      current = false;
       console.log("Selected: " + $topics);
+  }
+
+  let current = false;
+  function back()
+  {
+    current = true;
   }
 
   // let currentComponent = "";
@@ -41,7 +49,9 @@
 </script>
 
 <div>
-  {#if makeQuiz}
+  <img src={arrow} alt="|" class="back">
+  <button class="btnBack" on:click={back}>Section</button>
+  {#if makeQuiz && !current}
     <MathQuizFormatter />
   {:else}
   <!-- <QuizNav currentComponent="Basic" on:navClicked={handleNavClicked} /> -->

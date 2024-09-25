@@ -19,6 +19,7 @@
     import { userHasDownloadedModel } from "../helpers/localStorage";
     import { get } from "http";
     import { slice } from "@tensorflow/tfjs-core";
+    import arrow from "../assets/arrow.png";
 
     // Reactive statement to check if the user has already downloaded at least one AI model
     $: userHasDownloadedAtLeastOneModel = userHasDownloadedModel();
@@ -297,9 +298,17 @@
     }
   }
 
+  function back()
+  {
+    // Do nothing
+  }
 </script>
 
-<div class="flex flex-col justify-center w-full items-center">
+<div class="w-full">
+  <img src={arrow} alt="|" class="back">
+  <button class="btnBack" on:click={back}>Quiz</button>
+  
+  <div class="flex flex-col justify-center w-full items-center">
     <h1 class="text-white mb-3 border-b-2 border-dotted border-white w-full text-center text-3xl">Quiz</h1>
     <div class="quiz">
         {#each $questions as question, index}
@@ -327,6 +336,7 @@
           <p>Loading chat interface...</p>
         {/if}
       </div> -->
+  </div>
 </div>
 
 <style>
