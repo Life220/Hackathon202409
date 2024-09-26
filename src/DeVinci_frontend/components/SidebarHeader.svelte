@@ -10,7 +10,10 @@
   import devincilogo from "/devinci-logo.svg";
 
   import { userHasDownloadedModel } from "../helpers/localStorage";
+  // import { getUserChoice, makeNew } from './deVinciInterface.svelte';
 
+  // import { userChoice } from "./deVinciInterface.svelte";
+  
   // Reactive statement to check if the user has already downloaded at least one AI model
   $: userHasDownloadedAtLeastOneModel = userHasDownloadedModel();
 
@@ -23,12 +26,16 @@
     };
     if ($location !== "/") {
       push('/');
+      // makeNew("Chat");
+
     };
     return;
   };
 
   async function showNewQuiz() {
-    push('/quizCreator');
+    push('/');
+    // makeNew("Quiz");
+
     return;
   }
 

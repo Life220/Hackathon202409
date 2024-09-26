@@ -22,7 +22,7 @@
     <button on:click={() => clickedNav("Subject")}>Subject</button>
     {#if currentComponent}
         {#if $components.includes("Math")}
-            <img src={arrow} class="arrow"/>
+            <img src={arrow} alt="|" class="arrow"/>
             <a href='/#/mychats' class="a2">Math</a>
         {:else if currentComponent == "Corruption"}
             <a href='/#/mychats'>Corruption</a>

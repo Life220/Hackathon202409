@@ -14,8 +14,11 @@
   } from "../helpers/vector_database";
   import SelectModel from "./SelectModel.svelte";
   import ChatBox from "./ChatBox.svelte";
+  import QuizCreator from './QuizCreator.svelte';
 
   import { userHasDownloadedModel } from "../helpers/localStorage";
+    import About from '../pages/About.svelte';
+    import App from '../App.svelte';
 
   // Reactive statement to check if the user has already downloaded at least one AI model
   $: userHasDownloadedAtLeastOneModel = userHasDownloadedModel();
@@ -203,17 +206,56 @@
     // if no reply was returned, an error occurred
     throw new Error('An error occurred');
   };
+
+  export let userChoice: String = "";
+  export function getUserChoice(choice: String = "")
+  {
+    userChoice = choice;
+  }
+
+  export let chatKey: number = 0;
+  export let quizKey: number = 0;
+  export function makeNew(newSelection: String)
+  {
+    switch (newSelection)
+    {
+      case "Chat":
+        chatKey += 1;
+        break;
+      
+      case "Quiz":
+        quizKey += 1;
+        break;
+
+    }
+  }
 </script>
 
 <div id="chatinterface" class="flex flex-col p-4 pb-24 max-w-3xl mx-auto w-full">
   {#if !$chatModelIdInitiatedGlobal}
     <SelectModel onlyShowDownloadedModels={true} autoInitiateSelectedModel={true}/>
-  {:else if isChatBoxReady}
-    {#key $activeChatGlobal}
-      <ChatBox modelCallbackFunction={getChatModelResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool}/>
-    {/key}
   {:else}
-    <p>Loading chat interface...</p>
+    {#if userChoice}
+      {#if userChoice == "Chat"}
+        {#if isChatBoxReady}
+          {#key chatKey}
+            <ChatBox modelCallbackFunction={getChatModelResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool}/>
+          {/key}
+        {:else}
+          <p>Loading chat interface...</p>
+        {/if}
+      {:else if userChoice == "Quiz"}
+      {#key quizKey}
+      <!-- Quiz... -->
+        <!-- <ChatBox modelCallbackFunction={getChatModelResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool}/> -->
+         <QuizCreator />
+      {/key}
+    {/if}
+  {:else}
+    <!-- {:else} -->
+    <button on:click={() => getUserChoice("Chat")}>Chat</button>
+    <button on:click={() => getUserChoice("Quiz")}>Quiz</button>
+    {/if}
   {/if}
 </div>
 

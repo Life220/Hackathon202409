@@ -4,7 +4,7 @@
 
   import Sidebar from "../components/Sidebar.svelte";
   import Navigation from "../components/Navigation.svelte";
-  import ChatInterface from "../components/ChatInterface.svelte";
+  import ChatInterface from "../components/deVinciInterface.svelte";
   import UnsupportedBrowserBanner from "../components/UnsupportedBrowserBanner.svelte";
   import UnsupportedDeviceBanner from "../components/UnsupportedDeviceBanner.svelte";
 

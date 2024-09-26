@@ -11,7 +11,7 @@
   import deVinci from "./pages/deVinci.svelte";
   import ExperiencesSelection from "./pages/ExperiencesSelection.svelte";
   import ExperiencesCreation from "./pages/ExperiencesCreation.svelte";
-  import QuizCreator from "./pages/QuizCreator.svelte";
+  import QuizCreator from "./components/QuizCreator.svelte";
 
   import { syncLocalChanges } from "./helpers/localStorage";
 

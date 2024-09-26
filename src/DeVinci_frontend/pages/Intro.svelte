@@ -2,7 +2,7 @@
   import { deviceType, supportsWebGpu } from "../store";
   import Topnav from "../components/Topnav.svelte";
   import Footer from "../components/Footer.svelte";
-  import ChatInterface from "../components/ChatInterface.svelte";
+  import DeVinciInterface from "../components/deVinciInterface.svelte";
   import LoginMenu from "../components/LoginMenu.svelte";
   import UnsupportedDeviceBanner from "../components/UnsupportedDeviceBanner.svelte";
   import UnsupportedBrowserBanner from "../components/UnsupportedBrowserBanner.svelte";
@@ -18,7 +18,7 @@
   <UnsupportedBrowserBanner />
 {/if}
 
-<ChatInterface />
+<DeVinciInterface />
 
 <Footer />
 
