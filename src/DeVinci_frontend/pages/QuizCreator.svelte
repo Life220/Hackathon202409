@@ -5,7 +5,7 @@
   import Footer from "../components/Footer.svelte";
   import devincilogo from "/devinci-logo.svg";
 
-  import { onMount } from 'svelte';
+  import { onMount, afterUpdate } from 'svelte';
   import DeVinci from "./deVinci.svelte";
   import StartUpQuizPanel from "../components/StartUpQuizPanel.svelte";
   import Math from "../components/Math.svelte";
@@ -13,9 +13,16 @@
   import QuizNav from "../components/quizNav.svelte";
   import arrow from "../assets/arrow.png";
   import { sub } from "@tensorflow/tfjs-core";
+  import SelectModel from "../components/SelectModel.svelte";
+  import {
+    chatModelGlobal,
+    activeChatGlobal,
+    chatModelIdInitiatedGlobal,
+  } from "../store";
 
   let subject: string = "";
   let topic: string | null = null;
+  let isChatBoxReady = false;
 
   function handleSubject(message: string)
   {
@@ -63,6 +70,12 @@
       currentComponent = event.detail.nav;
       console.log("Subject heard :" + currentComponent);
   }
+
+  afterUpdate(() => {
+    if ($chatModelIdInitiatedGlobal && !isChatBoxReady) {
+      isChatBoxReady = true;
+    }
+  });
 </script>
 
 <div class="flex flex-row h-screen">
@@ -91,23 +104,34 @@
       </div>
     </header>
 
-    <main id="QuizMain" class="pt-8 pb-16 lg:pt-8 lg:pb-24 bg-slate-100 dark:bg-gray-900 antialiased">
-      <img src={devincilogo} class="rotating-image w-16 h-16 p-0 m-8 rounded-full" alt="devinci logo" />
-      <div id="Quiz">
-        {#if subject != ""}
-          <button class="btnBack" on:click={back}>Subject</button>
-          {#if subject === 'Math'}
-            <Math />
-          {:else if subject === 'Corruption'}
-          <Corruption />
-        {/if}
-        {:else}
-          <!-- <QuizNav on:navClicked={handleNavClicked} /> -->
-          <StartUpQuizPanel sendMessageCallbackFunction={handleSubject} />
-        {/if}
-      </div>
-    </main>
 
+    {#if !$chatModelIdInitiatedGlobal}
+      <SelectModel onlyShowDownloadedModels={true} autoInitiateSelectedModel={true}/>
+    {:else}
+      {#if isChatBoxReady}
+        {#key $chatModelIdInitiatedGlobal}
+          <main id="QuizMain" class="pt-8 pb-16 lg:pt-8 lg:pb-24 bg-slate-100 dark:bg-gray-900 antialiased">
+            <img src={devincilogo} class="rotating-image w-16 h-16 p-0 m-8 rounded-full" alt="devinci logo" />
+            <div id="Quiz">
+              {#if subject != ""}
+                <button class="btnBack" on:click={back}>Subject</button>
+                {#if subject === 'Math'}
+                  <Math />
+                {:else if subject === 'Corruption'}
+                <Corruption />
+              {/if}
+              {:else}
+                <!-- <QuizNav on:navClicked={handleNavClicked} /> -->
+                <StartUpQuizPanel sendMessageCallbackFunction={handleSubject} />
+              {/if}
+            </div>
+          </main>
+        {/key}
+      {:else}
+        <p>Loading chat interface...</p>
+      {/if}
+    {/if}
+    
     <Footer />
   </main>
 </div>
