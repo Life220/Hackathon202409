@@ -21,7 +21,7 @@
     export let modelCallbackFunction;
     export let chatDisplayed;
     export let callbackSearchVectorDbTool;
-    export let given: string;
+    export let prompt: string;
   
     let newMessageText = '';
     let messages = [];

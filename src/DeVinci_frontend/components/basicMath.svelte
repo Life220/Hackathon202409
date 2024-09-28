@@ -52,7 +52,7 @@
   <img src={arrow} alt="|" class="back">
   <button class="btnBack" on:click={back}>Section</button>
   {#if makeQuiz && !current}
-    <MathQuizFormatter />
+    <MathQuizFormatter topics={topics} />
   {:else}
   <!-- <QuizNav currentComponent="Basic" on:navClicked={handleNavClicked} /> -->
     <h1 class="text-white mb-3 border-b-2 border-dotted border-white w-full text-center text-3xl">Select a Topic</h1>

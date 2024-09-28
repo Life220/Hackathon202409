@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { location, push } from 'svelte-spa-router';
   import {
     store,
@@ -10,7 +10,6 @@
   import devincilogo from "/devinci-logo.svg";
 
   import { userHasDownloadedModel } from "../helpers/localStorage";
-  // import { getUserChoice, makeNew } from './deVinciInterface.svelte';
 
   // import { userChoice } from "./deVinciInterface.svelte";
   
@@ -18,27 +17,23 @@
   $: userHasDownloadedAtLeastOneModel = userHasDownloadedModel();
 
   // User can select between chats (global variable is kept)
-  async function showNewChat() {
+  async function showNewChat()
+  {
     if ($activeChatGlobal !== null) {
       $activeChatGlobal = null;
     } else {
       $activeChatGlobal = false;
     };
     if ($location !== "/") {
+      // push('/?type=Chat');
       push('/');
-      // makeNew("Chat");
-
     };
-    return;
   };
 
-  async function showNewQuiz() {
-    push('/');
-    // makeNew("Quiz");
-
-    return;
+  function showNewQuiz()
+  {
+    push('/quizCreator');
   }
-
 </script>
 
 <div class="flex flex-col justify-center w-full items-center">

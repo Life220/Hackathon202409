@@ -14,11 +14,11 @@
   } from "../helpers/vector_database";
   import SelectModel from "./SelectModel.svelte";
   import ChatBox from "./ChatBox.svelte";
-  import QuizCreator from './QuizCreator.svelte';
 
   import { userHasDownloadedModel } from "../helpers/localStorage";
     import About from '../pages/About.svelte';
     import App from '../App.svelte';
+    import { log } from 'console';
 
   // Reactive statement to check if the user has already downloaded at least one AI model
   $: userHasDownloadedAtLeastOneModel = userHasDownloadedModel();
@@ -207,54 +207,25 @@
     throw new Error('An error occurred');
   };
 
-  export let userChoice: String = "";
-  export function getUserChoice(choice: String = "")
+  let userChoice: String = "";
+  function getUserChoice(choice: String = "")
   {
     userChoice = choice;
   }
-
-  export let chatKey: number = 0;
-  export let quizKey: number = 0;
-  export function makeNew(newSelection: String)
-  {
-    switch (newSelection)
-    {
-      case "Chat":
-        chatKey += 1;
-        break;
-      
-      case "Quiz":
-        quizKey += 1;
-        break;
-
-    }
-  }
 </script>
 
-<div id="chatinterface" class="flex flex-col p-4 pb-24 max-w-3xl mx-auto w-full">
+<div id="chatinterface" class="flex flex-col max-w-3xl mx-auto w-full">
   {#if !$chatModelIdInitiatedGlobal}
     <SelectModel onlyShowDownloadedModels={true} autoInitiateSelectedModel={true}/>
   {:else}
-    {#if userChoice}
-      {#if userChoice == "Chat"}
-        {#if isChatBoxReady}
-          {#key chatKey}
-            <ChatBox modelCallbackFunction={getChatModelResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool}/>
-          {/key}
-        {:else}
-          <p>Loading chat interface...</p>
-        {/if}
-      {:else if userChoice == "Quiz"}
-      {#key quizKey}
-      <!-- Quiz... -->
-        <!-- <ChatBox modelCallbackFunction={getChatModelResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool}/> -->
-         <QuizCreator />
+    {#if isChatBoxReady}
+      {#key $chatModelIdInitiatedGlobal}
+        <div class="p-4 pb-24">
+          <ChatBox modelCallbackFunction={getChatModelResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool}/>
+        </div>
       {/key}
-    {/if}
-  {:else}
-    <!-- {:else} -->
-    <button on:click={() => getUserChoice("Chat")}>Chat</button>
-    <button on:click={() => getUserChoice("Quiz")}>Quiz</button>
+    {:else}
+      <p>Loading chat interface...</p>
     {/if}
   {/if}
 </div>
@@ -262,3 +233,30 @@
 {#if showToast}
   <InstallToastNotification />
 {/if}
+<style>
+  .heading
+  {
+    text-align: center;
+    border-bottom: 2px dotted black;
+    width: 100%;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .selection
+  {
+    align-self: center;
+    border: 2px dotted black;
+    width: 10rem;
+    height: 3rem;
+    border-radius: 30%;
+    margin: 1rem;
+    background-color: rgb(196, 238, 255);
+  }
+
+  .selection:hover
+  {
+    background-color: rgb(79, 79, 184);
+    color: white;
+  }
+</style>

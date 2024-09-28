@@ -20,10 +20,12 @@
     import { get } from "http";
     import { slice } from "@tensorflow/tfjs-core";
     import arrow from "../assets/arrow.png";
+    import { Writable } from "stream";
 
     // Reactive statement to check if the user has already downloaded at least one AI model
     $: userHasDownloadedAtLeastOneModel = userHasDownloadedModel();
 
+    export let topics = writable<String[]>([]);
     let worker: Worker;
     let prompt = '';
     let results = writable<any[]>([]);
