@@ -25,9 +25,9 @@
     // Reactive statement to check if the user has already downloaded at least one AI model
     $: userHasDownloadedAtLeastOneModel = userHasDownloadedModel();
 
-    export let topics = writable<String[]>([]);
+    // export let topics = writable<String[]>([]);
+    export let prompt: string;
     let worker: Worker;
-    let prompt = '';
     let results = writable<any[]>([]);
     let userAnswers = writable<string[]>([]);
     let marks = writable<boolean[]>([]);
@@ -276,7 +276,7 @@
   // Format the response from the AI as a quiz
   async function quizFormatter(latestResult: string)
   {
-    // console.log(latestResult);
+    console.log(latestResult);
     if (latestResult)
     {
       const doubleQuoteRegex = /"([^"]+)"/g;
@@ -292,9 +292,9 @@
         matches.push(match[1])
 
       let formattedQuestions = matches.map(m => {
-        let cleaned = m.replace(/[^0-9+=]/g, '');
+        let cleaned = m.replace(/[^0-9+\-*/x÷=]/g, '');
         let beforeEqual = cleaned.split('=')[0];
-        let spaced = beforeEqual.replace(/([0-9])([+=])/g, '$1 $2').replace(/([+=])([0-9])/g, '$1 $2');
+        let spaced = beforeEqual.replace(/([0-9])([+\-*/x÷=])/g, '$1 $2').replace(/([+\-*/x÷=])([0-9])/g, '$1 $2');
         return spaced;
       });
       questions.set(formattedQuestions);
@@ -306,6 +306,7 @@
     questions.set([]);
     marks.set([]);
     results.set([]);
+    userAnswers.set([]);
     key.update(n => n + 1);
   }
 
@@ -340,7 +341,7 @@
     {/if}
 
       <div id="Quiz">
-        <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} given={"Math"}/>
+        <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} prompt={prompt}/>
       </div>
       <!-- <div id="chatinterface" class="flex flex-col p-4 pb-24 max-w-3xl mx-auto w-full">
         {#if !$chatModelIdInitiatedGlobal}

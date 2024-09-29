@@ -12,6 +12,7 @@
     const Physics = 'Physics';
     const Accounting = 'Accounting';
     const Information_Technology = 'Information Techbology';
+    const Feedback = 'Feedback';
   </script>
   
   <div>
@@ -58,6 +59,13 @@
              on:click={() => sendMessage(Accounting)}>
           <div class="inline-flex items-center justify-between w-full p-3">
             <p class="w-full text-[#151b1e] text-sm font-normal">{Accounting}</p>
+          </div>
+        </div>
+
+        <div class="text-[#151b1e] bg-gray-100 border-2 border-dotted border-[#cb8bd0] rounded-lg cursor-pointer w-24 text-center self-center"
+             on:click={() => sendMessage(Feedback)}>
+          <div class="inline-flex items-center justify-between w-full p-3">
+            <p class="w-full text-[#151b1e] text-sm font-normal">{Feedback}</p>
           </div>
         </div>
       </div>

@@ -8,6 +8,7 @@
   import arrow from "../assets/arrow.png";
 
   let initialPage = true;
+  let prompt = "generate a scenarion about corruption and ask a moral question about it, in format 'Scenario:' and 'Question:'";
 
   function quizMe()
   {
@@ -39,7 +40,7 @@
         Not every answer is 100% correct or incorred but you will be marked according to ethics and morals from your answer.</p>
       <button class="text-white border-2 p-3" on:click={quizMe}>Quiz me</button>
     {:else if !current}
-      <Quiz subject="Corruption" />
+      <Quiz prompt={prompt} />
     {/if}
     <div class="flex flex-col gap-4 w-full">
       

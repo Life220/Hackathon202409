@@ -24,7 +24,8 @@
   // Reactive statement to check if the user has already downloaded at least one AI model
   $: userHasDownloadedAtLeastOneModel = userHasDownloadedModel();
 
-  export let subject: string;
+  export let prompt: string;
+  // export let subject: string;
   let userAnswer: String;
   let marks = writable<boolean[]>([]);
   const key = writable(0);
@@ -272,12 +273,16 @@
               {Question}
               <p class="bold mt-5">Answer:</p>
               <textarea class="response" bind:value={userAnswer} />
+              {#if finalPrompt}
+                {#if finalResponse}
+                  <p class="bold mt-5">Results:</p>
+                  <p>{finalResponse}</p>
+                {:else}
+                  <p>Loading</p>
+                {/if}
+              {/if}
             {:else}
               <p>Loading</p>
-            {/if}
-            {#if finalResponse}
-              <p class="bold mt-5">Results:</p>
-              <p>{finalResponse}</p>
             {/if}
         </div>
       </div>
@@ -290,9 +295,9 @@
   
       <div id="Quiz">
         {#if !finalPrompt}
-          <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} given={subject}/>
+          <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} prompt={prompt}/>
         {:else}
-          <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} given={finalPrompt}/>
+          <MakeQuiz modelCallbackFunction={getResponse} chatDisplayed={$activeChatGlobal} callbackSearchVectorDbTool={setVectorDbSearchTool} prompt={finalPrompt}/>
         {/if}
     </div>
   </div>

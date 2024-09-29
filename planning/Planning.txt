@@ -1,0 +1,18 @@
+Objective:
+The primary objective of this program is to educate users about corruption while simultaneously enhancing their problem-solving and analytical skills quizzes.
+
+In order for a person to understand corruption and solve as to why the situation they might find themselves in, they must have Knowledge on the subject at hand and the ability to analyse and solve it.
+This is where the idea of not only educating and testing morals and opinions but also enhancing and developing their problem analytical and solving skills.
+
+Here we implemented a system to provide a scenario and ask a question based on it. The users answer will then be put to a moral test and provided feedback.
+additionally the user can educate themselves and improve their skills in the other subjects (currently only basic math)
+
+The system uses AI for Scenarios, Questions and Feedback.
+For math the answers are calculated using an algorithm.
+
+    Pick a subject
+    Pick Topics (if applicable)
+    "Quiz me" for the AI to generate a quiz
+    Answer the question/questions
+    "Submit" for feedback/marking
+    "Generate new" for a new quiz

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { store, chatModelIdInitiatedGlobal, chatModelGlobal } from "../store";
-    import { now } from "svelte/internal";
+    // import { now } from "svelte/internal";
   
     import Message from './Message.svelte';
     import StartUpChatPanel from "./StartUpChatPanel.svelte";
@@ -238,19 +238,19 @@
   
     onMount(() => {
       loadChat();
-      let message;
+      let message = prompt;
 
-      switch (given)
-      {
-        case 'Math':
-          message = "generate 10 math sums in the format 'x+y=z', put sums in quotes, no title";
-          break;
-        case 'Corruption':
-          message = "generate a scenarion about corruption and ask a moral question about it, in format 'Scenario:' and 'Question:'";
-          break;
-        default:
-          message = given;
-      }
+      // switch (given)
+      // {
+      //   case 'Math':
+      //     message = "generate 10 math sums in the format 'x+y=z', put sums in quotes, no title";
+      //     break;
+      //   case 'Corruption':
+      //     message = "generate a scenarion about corruption and ask a moral question about it, in format 'Scenario:' and 'Question:'";
+      //     break;
+      //   default:
+      //     message = given;
+      // }
       
       sendMessage(message);
     });

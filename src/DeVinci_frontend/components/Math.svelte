@@ -47,7 +47,7 @@
               </div>
             </div>
 
-            <div class="text-[#151b1e] bg-gray-100 border-2 border-dotted border-[#a1c490] rounded-lg cursor-pointer"
+            <div class="text-[#151b1e] bg-gray-100 border-2 border-dotted border-[#a1c490] rounded-lg cursor-pointer disabled"
                   on:click={() => setSection('Advanced')}>
               <div class="inline-flex items-center justify-between w-full p-3">
                 <p class="w-full text-[#151b1e] text-sm font-normal">Advanced</p>

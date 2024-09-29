@@ -15,23 +15,28 @@
   const Square = 'Square';
   const Cube = 'Cube';
   const Power = 'Power';
+  let prompt: string = "";
 
   let topics = writable<string[]>([]);
   function handleTopic(topic: string)
   {
-      topics.update(currentTopics => {
-          if (currentTopics.includes(topic))
-              return currentTopics.filter(t => t !== topic);
-          else
-              return [...currentTopics, topic];
-      });
+    topics.update(currentTopics => {
+      if (currentTopics.includes(topic))
+        return currentTopics.filter(t => t !== topic);
+      else
+        return [...currentTopics, topic];
+    });
   }
 
   function quizMe()
   {
-      makeQuiz = true;
-      current = false;
-      console.log("Selected: " + $topics);
+    makeQuiz = true;
+    current = false;
+    console.log("Selected: " + $topics);
+    
+    prompt = "generate 10 math sums in the format 'x+y=z', put sums in quotes, no title, " + $topics;
+    console.log("Prompt: " + prompt);
+
   }
 
   let current = false;
@@ -52,7 +57,7 @@
   <img src={arrow} alt="|" class="back">
   <button class="btnBack" on:click={back}>Section</button>
   {#if makeQuiz && !current}
-    <MathQuizFormatter topics={topics} />
+    <MathQuizFormatter prompt={prompt} />
   {:else}
   <!-- <QuizNav currentComponent="Basic" on:navClicked={handleNavClicked} /> -->
     <h1 class="text-white mb-3 border-b-2 border-dotted border-white w-full text-center text-3xl">Select a Topic</h1>

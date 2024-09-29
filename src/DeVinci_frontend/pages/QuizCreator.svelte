@@ -19,6 +19,7 @@
     activeChatGlobal,
     chatModelIdInitiatedGlobal,
   } from "../store";
+  import QuizFeedback from "../components/quizFeedback.svelte";
 
   let subject: string = "";
   let topic: string | null = null;
@@ -118,7 +119,9 @@
                 {#if subject === 'Math'}
                   <Math />
                 {:else if subject === 'Corruption'}
-                <Corruption />
+                  <Corruption />
+                {:else if subject === 'Feedback'}
+                  <QuizFeedback />
               {/if}
               {:else}
                 <!-- <QuizNav on:navClicked={handleNavClicked} /> -->
@@ -131,7 +134,7 @@
         <p>Loading chat interface...</p>
       {/if}
     {/if}
-    
+
     <Footer />
   </main>
 </div>
